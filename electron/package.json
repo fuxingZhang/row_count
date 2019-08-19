@@ -1,10 +1,10 @@
 {
   "name": "ai",
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "Identify text from images and pdf",
   "main": "app.js",
   "scripts": {
-    "start": "electron .",
+    "start": "set NODE_ENV=development&& electron .",
     "pack": "electron-builder --dir",
     "dist": "electron-builder",
     "postinstall": "electron-builder install-app-deps"
