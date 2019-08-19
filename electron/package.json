@@ -1,0 +1,43 @@
+{
+  "name": "ai",
+  "version": "2.0.0",
+  "description": "Identify text from images and pdf",
+  "main": "app.js",
+  "scripts": {
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder",
+    "postinstall": "electron-builder install-app-deps"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/fuxingZhang/ai.git"
+  },
+  "author": "zfx",
+  "bugs": {
+    "url": "https://github.com/fuxingZhang/ai/issues"
+  },
+  "homepage": "https://github.com/fuxingZhang/ai#readme",
+  "dependencies": {
+    "xlsx-template": "^0.5.0"
+  },
+  "devDependencies": {
+    "electron": "^6.0.1",
+    "electron-builder": "^21.2.0"
+  },
+  "build": {
+    "appId": "zhangfuxing",
+    "productName": "源代码行数统计",
+    "mac": {
+      "category": "your.app.category.type"
+    },
+    "win": {
+      "icon": "icon.png"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "perMachine": true
+    }
+  }
+}

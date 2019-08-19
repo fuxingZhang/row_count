@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>源代码行数统计</title>
+  <style>
+    h1 {
+      font-size: 30px;
+      font-weight: 700;
+      font-family: cursive
+    }
+
+    body {
+      text-align: center;
+      margin: 40px 20%;
+    }
+
+    .drop-block {
+      position: relative;
+      height: 200px;
+      line-height: 200px;
+      text-align: center;
+      border: 2px dashed #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      outline: 0;
+      margin-top: 100px;
+    }
+
+    .drop-block:hover {
+      opacity: .8;
+      border-color: #f4364c;
+    }
+
+    #upload {
+      display: none;
+    }
+
+    .alert {
+      z-index: 10;
+      background: rgba(94, 89, 89, 0.5);
+      position: fixed;
+      top: 0;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      text-align: center;
+      justify-content: center;
+      align-items: center;
+      display: flex;
+    }
+
+    #wapper {
+      width: 400px;
+      position: relative;
+      background: #fff;
+      opacity: 1;
+      border-radius: 8px;
+    }
+
+    #wapper div:nth-child(1) {
+      font-size: 16px;
+      font-weight: normal;
+      width: 100%;
+      text-align: left;
+      height: 60px;
+      line-height: 60px;
+      text-indent: 20px;
+      border-bottom: solid 1px #eef0f1;
+    }
+
+    #wapper div:nth-child(2) {
+      margin: 40px 20px;
+      text-align: left;
+    }
+
+    #wapper div:nth-child(3) {
+      border-top: solid 1px #eef0f1;
+      height: 60px;
+      line-height: 60px;
+      text-align: right;
+    }
+
+    #wapper div:nth-child(3) span {
+      padding: 6px 16px;
+      background-color: #0095d9;
+      color: #fff;
+      border-radius: 5px;
+      margin-right: 20px;
+      font-size: 14px;
+    }
+
+    #wapper div:nth-child(3) span:hover {
+      cursor: pointer;
+    }
+  </style>
+
+  <link rel="stylesheet" href="./element/css/index.css">
+
+  <style>
+    .el-message-box {
+      width: 300px;
+    }
+  </style>
+
+  <script src="./element/js/vue.js"></script>
+  <script src="./element/js/index.js"></script>
+</head>
+
+<body>
+  <div id="app">
+    <h1>源代码行数统计</h1>
+
+    <div id="drag" @click="clickInput" @drop="drop" @dragover="dragover" class="drop-block">
+      点击或将文件夹拖至此处</div>
+
+    <!-- <input ref="input" type="file" @change="inputChange" style="display: none;"> -->
+
+    <!-- <div class="alert" v-show="visible">
+      <div id="wapper">
+        <div>提示</div>
+        <div>文件请直接使用vscode打开</div>
+        <div class="">
+          <span @click="closeAlert">确定</span>
+        </div>
+      </div>
+    </div> -->
+  </div>
+
+  <script>
+    const { ipcRenderer, remote } = require('electron');
+    const fs = require('fs')
+
+    const vm = new Vue({
+      el: '#app',
+      data() {
+        return {
+          visible: false,
+          loading: null
+        }
+      },
+      methods: {
+        // inputChange(e) {
+        //   const { path, type } = e.target.files[0];
+
+        //   this.upload(path, type);
+
+        //   e.target.value = '';
+        // },
+        closeAlert() {
+          this.visible = false;
+        },
+        clickInput() {
+          remote.dialog.showOpenDialog({
+            title: '选择文件夹',
+            properties: ['openDirectory']
+          }).then(result => {
+            console.log(result)
+            if (result.canceled) {
+              console.log()
+              this.$notify.info({
+                title: '消息',
+                message: '已取消'
+              });
+            } else {
+              this.send(result.filePaths[0])
+            }
+          })
+        },
+        dragover(e) {
+          e.stopPropagation();
+          e.preventDefault();
+        },
+        drop(e) {
+          e.stopPropagation();
+          e.preventDefault();
+
+          const { path } = e.dataTransfer.files[0];
+
+          this.send(path)
+        },
+        send(path) {
+          this.loading = this.$loading({
+            lock: true,
+            text: '识别中',
+            spinner: 'el-icon-loading',
+            background: 'rgba(0, 0, 0, 0.7)'
+          });
+          ipcRenderer.send('drop', path);
+        }
+      }
+    })
+
+    ipcRenderer.on('ocr-reply', (event, result) => {
+      console.log(result)
+
+      const { path, filename } = JSON.parse(result);
+
+      // console.log({ words, filename })
+
+      // const blob = new Blob([words.join('\r\n')]);
+
+      // const href = URL.createObjectURL(blob);
+
+      const download = `
+        <a style="background: #3a8ee6;color: #fff;border-radius: 4px;display: inline-block;font-size: 14px;padding: 6px 16px;text-decoration: none;" 
+        href="${path}" 
+        download=${filename}>下载文件</a>
+      `;
+
+      // const html = download + words.map(item => `<p>${item}</p>`).join('');
+      const html = download;
+
+      vm.$alert(html, '统计结果', {
+        dangerouslyUseHTMLString: true,
+        center: true,
+        showConfirmButton: false
+      }).then(() => {
+        console.log('用户点击确定');
+      }).catch(action => {
+        console.log(action);  // cancel
+      }).finally(() => {
+        vm.$data.loading.close();
+
+        fs.unlink(path, (err) => {
+          if (err) throw err;
+          console.log(`${filename}文件已删除`);
+        });
+      })
+    })
+  </script>
+</body>
+
+</html>

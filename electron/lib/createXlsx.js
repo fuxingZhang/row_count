@@ -1,7 +1,7 @@
 const XlsxTemplate = require('xlsx-template');
 const fs = require('fs');
 const path = require('path');
-const file = fs.readFileSync('./src/template/template.xlsx');
+const file = fs.readFileSync('./lib/template/template.xlsx');
 const template = new XlsxTemplate(file);
 const sheetNumber = 1;
 
@@ -23,7 +23,7 @@ function createXlsx(data) {
   }
   
   console.log(`create xlsx file completed: ${filePath}`);
-  return true
+  return path.resolve(filePath)
 }
 
 module.exports = createXlsx
