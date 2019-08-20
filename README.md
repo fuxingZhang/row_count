@@ -1,7 +1,13 @@
 # row_count
 Count the number of file lines in the folder
 
-## config  
+## electron 版本
+
+![运行截图](./screenshots/electron.png)
+
+## nodejs版本
+
+### config  
 
 ``` js  
 module.exports = {
@@ -14,9 +20,9 @@ module.exports = {
 }
 ``` 
 
-##  run
+###  run
 > node app  
 
-##  xlsx file
+###  xlsx file
 the xlsx file in 
 > ./xlsx
