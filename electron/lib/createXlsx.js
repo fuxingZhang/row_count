@@ -8,7 +8,7 @@ const path = require('path');
  * window ==> set NODE_ENV=development&& electron .
  * POSIX shell ==> NODE_ENV=development electron .
  */
-const templatePath = `.${process.NODE_ENV === 'development' ? '' : '/resources/app.asar'}/lib/template/template.xlsx`;
+const templatePath = `.${process.env.NODE_ENV === 'development' ? '' : '/resources/app.asar'}/lib/template/template.xlsx`;
 const file = fs.readFileSync(templatePath);
 const template = new XlsxTemplate(file);
 const sheetNumber = 1;

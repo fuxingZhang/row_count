@@ -1,11 +1,11 @@
 /**
  * row count
  */
-const { extensions, excludeSubDir } = require('../config');
+// const { dir, extensions, excludeSubDir } = require('../config');
 const getCount = require('./getCount');
 const createXlsx = require('./createXlsx');
 
-function handleDir(dir) {
+function handleDir({ dir, extensions, excludeSubDir }) {
   const { result, total } = getCount({ dir, extensions, excludeSubDir });
 
   console.log({ dir, result, total });

@@ -57,12 +57,14 @@ app.on('activate', () => {
 
 // 在这个文件中，你可以续写应用剩下主进程代码。
 // 也可以拆分成几个文件，然后用 require 导入。
-ipcMain.on('drop', async (event, filePath) => {
+ipcMain.on('message', async (event, data) => {
   try {
-    const result = handleDir(filePath);
-    event.reply('ocr-reply', JSON.stringify({ path: result, filename: path.basename(result) }))
+    const { dir, extensions, excludeSubDir } = JSON.parse(data);
+    console.log({ dir, extensions, excludeSubDir })
+    const result = handleDir({ dir, extensions, excludeSubDir });
+    event.reply('reply', JSON.stringify({ path: result, filename: path.basename(result) }))
   } catch (error) {
-    event.reply('ocr-reply', JSON.stringify({ error }))
+    event.reply('reply', JSON.stringify({ error }))
   }
 })
 
