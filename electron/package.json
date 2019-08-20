@@ -1,6 +1,6 @@
 {
   "name": "ai",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Identify text from images and pdf",
   "main": "app.js",
   "scripts": {
