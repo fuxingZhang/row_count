@@ -3,7 +3,17 @@ Count the number of file lines in the folder
 
 ## electron 版本
 
-![运行截图](./screenshots/electron.png)
+* 启动  
+
+![运行截图](./screenshots/electron.png)  
+
+* 执行完毕  
+
+![运行截图](./screenshots/download.png)  
+
+* 生成的文档  
+
+![运行截图](./screenshots/excel.png)  
 
 ## nodejs版本
 
