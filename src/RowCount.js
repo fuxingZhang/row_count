@@ -11,7 +11,7 @@ class RowCount {
     this.excludeSubDir = excludeSubDir;
   }
 
-  getJsFilePath(dir) {
+  getFilePaths(dir) {
     const result = [];
     const paths = fs.readdirSync(dir);
 
@@ -20,7 +20,7 @@ class RowCount {
       const isDir = fs.statSync(filepath).isDirectory();
 
       if (isDir) {
-        if (!this.excludeSubDir.includes(item)) result.push(...this.getJsFilePath(filepath));
+        if (!this.excludeSubDir.includes(item)) result.push(...this.getFilePaths(filepath));
       } else {
         const extname = path.extname(filepath);
         // if(this.extensions.length === 1 && filepath.endsWith(this.extensions[0])) result.push(filepath);
@@ -32,7 +32,7 @@ class RowCount {
   }
 
   getAllCount() {
-    const paths = this.getJsFilePath(this.dir);
+    const paths = this.getFilePaths(this.dir);
     const result = [];
     let total = 0;
 
